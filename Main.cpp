@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include <time.h>
 
-//鐢ㄦ潵鑾峰彇绯荤粺鏃堕棿
+//用来获取系统时间
 void getTime(int *systime);
 void halt(int time);
 void printOption();
@@ -13,6 +13,7 @@ int main()
 	int time = 0;
 	int systime[2];
 	int pvtime[2];
+	int hours;
 	
 	printOption();
 	scanf("%d",&option);
@@ -38,14 +39,11 @@ int main()
 			printf("when will system halt:");
 			scanf("%d:%d",&pvtime[0],&pvtime[1]);
 			getTime(systime);
-			time = ((pvtime[0]-systime[0])%24*60+(pvtime[1]-systime[1]))*60;
-			while(time<0)
-			{
-				printf("error!please input again:");
-				scanf("%d:%d",&pvtime[0],&pvtime[1]);
-				time = ((pvtime[0]-systime[0])*60+(pvtime[1]-systime[1]))*60;
-			}
-			printf("system will halt at %d:%d\n",pvtime[0],pvtime[1]);
+			pvtime[0]=pvtime[0]-systime[0]>0?pvtime[0]:pvtime[0]+24;
+			hours = (pvtime[0]-systime[0])%24*60;
+			time = (hours+(pvtime[1]-systime[1]))*60;
+			printf("system will halt at %d:%d\n",pvtime[0]%24,pvtime[1]);
+			
 			halt(time);
 			break;
 		case 3:
@@ -84,9 +82,10 @@ void printOption()
 void halt(int time)
 {
 	char str[50];
-	system("shutdown -a");
+	system("shutdown -a >log.txt");
 	sprintf(str,"shutdown -s -t %d",time);
 	system(str);
+	sprintf(str,"echo 'shutdown -s -t %d'>log.txt",time);
 	system("pause");	
 }
 
