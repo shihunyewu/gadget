@@ -1,2 +1,2 @@
 # MiniPoweroff
-set the time of shutdowning system
+set the time to halt
