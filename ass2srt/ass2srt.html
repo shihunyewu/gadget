@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="gbk">
+<title>ass2srt</title>
+<script type="text/javascript">
+    function f(files){
+      file = files[0];
+      var reader = new FileReader();
+      reader.onload = function(){
+        var text =  reader.result;
+        var v = document.getElementById("result");
+        // text 中保存了台词
+        assVector = text.split('\n');
+        var j = 0;
+        for(var i = 0;i< assVector.length;i++){
+            if(/Dialogue/.test(assVector[i])){ // 暂时实现了我的案例
+              j++;
+              if(j<12)
+                continue;
+              elem = assVector[i];
+              startTime = elem.substring(12,22);
+              startTime = reconstructTime(startTime);
+              endTime = elem.substring(23,33);
+              endTime = reconstructTime(endTime);
+              text = elem.substring(63);
+              console.log(startTime + " --> "+endTime + '\n' + text);
+              v.innerHTML = v.innerHTML + "<p>"+(j-11) + "<br>"+startTime + " --> "+endTime + '<br>' + text+"</p><br>";
+            }
+              
+        }
+      };
+      reader.readAsText(file,'gbk');
+    };
+    function reconstructTime(timeStr){
+      timeStr = timeStr.replace('.',',');
+      return '0'+timeStr+'0';
+    };
+  </script>
+</head>
+<body>
+<input type="file" onchange="f(this.files)"/>
+<div id = "result"></div>
+</body>
+</html>
